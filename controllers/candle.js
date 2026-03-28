@@ -12,7 +12,7 @@ exports.getCandles = async (req, res) => {
     // Handle the error, e.g. return an error response
     return res.status(400).json({ success: false, message: 'No candle data found.' });
   }
-  let lastClose = assetObj.last;
+  let lastClose = assetObj.last ?? 100;
 
   // Generate last 100 candles (not persisted)
   for (let i = 99; i >= 0; i--) {
