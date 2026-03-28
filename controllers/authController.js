@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const sendEmail = require("../utils/sendEmail");
 
+
 //  OTP generate function
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -263,8 +264,28 @@ const login = async (req, res) => {
   }
 };
 
+// Logout controller
+const logout = async (req, res) => {
+  try {
+    const userId = req.user._id; // authenticate middleware se
+    const token = req.headers.authorization.split(" ")[1]; // current token
+
+    // Remove current token from sessions array
+    await User.updateOne(
+      { _id: userId },
+      { $pull: { sessions: { token } } }
+    );
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+  } catch (err) {
+    console.error("Logout error:", err);
+    res.status(500).json({ success: false, message: "Logout failed" });
+  }
+};
+
 module.exports = {
   signup,
   verifyOTP,
-  login
+  login,
+  logout
 };
